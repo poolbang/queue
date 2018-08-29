@@ -6,7 +6,7 @@
  * Time: 上午11:27
  */
 
-namespace webphplove\Queue;
+namespace Queue;
 
 use Swoft\Bean\Annotation\Bean;
 use Swoft\Bean\Annotation\Inject;

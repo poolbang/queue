@@ -6,7 +6,7 @@
  * Time: 上午11:20
  */
 
-namespace webphplove\Queue;
+namespace Queue;
 
 
 /**

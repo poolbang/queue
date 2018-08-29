@@ -6,8 +6,8 @@
  * Time: 上午11:20
  */
 
-namespace webphplove\Queue;
-use webphplove\Queue\Packer\MsgPacker;
+namespace Queue;
+use Queue\Packer\MsgPacker;
 use Swoft\Bean\Annotation\Bean;
 use Swoft\Bean\Annotation\Inject;
 

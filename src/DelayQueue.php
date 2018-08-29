@@ -6,10 +6,10 @@
  * Time: 上午11:29
  */
 
-namespace webphplove\Queue;
+namespace Queue;
 
 
-use webphplove\Queue\Exception\InvalidJobException;
+use Queue\Exception\InvalidJobException;
 use Swoft\App;
 use Swoft\Bean\Annotation\Bean;
 use Swoft\Bean\Annotation\Inject;

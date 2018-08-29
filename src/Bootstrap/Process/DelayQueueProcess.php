@@ -6,10 +6,10 @@
  * Time: 下午3:18
  */
 
-namespace webphplove\Queue\Bootstrap\Process;
+namespace Queue\Bootstrap\Process;
 
 
-use webphplove\Queue\DelayQueue;
+use Queue\DelayQueue;
 use Swoft\App;
 use Swoft\Bean\Annotation\Value;
 use Swoft\Console\Helper\ConsoleUtil;

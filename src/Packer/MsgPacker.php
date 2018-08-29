@@ -6,7 +6,7 @@
  * Time: 上午10:17
  */
 
-namespace webphplove\Queue\Packer;
+namespace Queue\Packer;
 use Swoft\Bean\Annotation\Bean;
 
 

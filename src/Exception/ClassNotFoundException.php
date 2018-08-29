@@ -6,7 +6,7 @@
  * Time: 上午11:17
  */
 
-namespace webphplove\Queue\Exception;
+namespace Queue\Exception;
 
 
 use Exception;

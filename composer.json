@@ -9,6 +9,13 @@
   ],
   "description": "queue for swoft",
   "license": "Apache-2.0",
+  "minimum-stability": "beta",
+  "authors": [
+    {
+      "name": "su",
+      "email": "1346233126@qq.com"
+    }
+  ],
   "require": {
     "swoft/console": "^1.0",
     "swoft/framework": "^1.0",
@@ -19,7 +26,7 @@
   },
   "autoload": {
     "psr-4": {
-      "webphplove\\Queue\\": "src/"
+      "Queue\\": "src/"
     }
   },
   "repositories": [
