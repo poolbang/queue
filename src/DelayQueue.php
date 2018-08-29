@@ -137,7 +137,7 @@ class DelayQueue
      */
     public function pop(array $topics)
     {
-        $readyJob   = $this->readyQueue->popReadyQueue($topics);
+        $readyJob = $this->readyQueue->popReadyQueue($topics);
         if (empty($readyJob)) {
             return [];
         }
@@ -158,7 +158,7 @@ class DelayQueue
      */
     public function bpop(array $topics, $timeout)
     {
-        $readyJob   = $this->readyQueue->bpopReadyQueue($topics, $timeout);
+        $readyJob = $this->readyQueue->bpopReadyQueue($topics, $timeout);
         if (empty($readyJob) || count($readyJob) != 2) {
             return [];
         }
@@ -201,13 +201,19 @@ class DelayQueue
                     $this->bucket->pushBucket($jobInfo['id'], $jobInfo['delay']);
                     continue;
                 }
-                ConsoleUtil::log('Found job {id} on Bucket. ' . json_encode(['id' => $jobId, 'time' => $time], true), [], 'info');
                 $this->readyQueue->pushReadyQueue($jobInfo['topic'], $jobInfo['id']);
-                ConsoleUtil::log('Push job {id} to {topic} ' . json_encode($jobInfo, true), [], 'notice');
+                if (config('queue.log', true)) {
+                    ConsoleUtil::log('Found job {id} on Bucket. ' . json_encode(['id' => $jobId, 'time' => $time], true), [], 'info');
+                    ConsoleUtil::log('Push job {id} to {topic} ' . json_encode($jobInfo, true), [], 'notice');
+                }
                 $this->bucket->removeBucket($jobInfo['id']);
-                if(App::hasBean($jobInfo['class'])){
+                if (App::hasBean($jobInfo['class'])) {
                     $queueClass = App::getBean($jobInfo['class']);
-                    call_user_func_array([$queueClass, $jobInfo['topic']], $jobInfo['args']);
+                    if ($queueClass instanceof JobHandler) {
+                        $queueClass->setId($jobId);
+                        $queueClass->setArgs($jobInfo['args']);
+                        $queueClass->run();
+                    }
                 }
             }
             if ($isBreak) {
@@ -215,6 +221,4 @@ class DelayQueue
             }
         }
     }
-
-
 }

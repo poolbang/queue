@@ -25,26 +25,21 @@ use Swoft\Process\ProcessInterface;
 class DelayQueueProcess implements ProcessInterface
 {
 
-    /**
-     * 每次对比的元素数量
-     */
-    protected $contrast = 10;
-
-    /**
-     * 空数据时等待时长
-     * @Value()
-     */
-    protected $interval = 1;
-
     public function run(SwoftProcess $process)
     {
         $self = $this;
+        //每次对比的元素数量
+        $contrast = config('queue.contrast', 10);
+        //空数据时等待时长
+        $interval = config('queue.interval', 1);
         // Swoole/HttpServer
         $server     = App::$server->getServer();
         $delayQueue = App::getBean(DelayQueue::class);
-        $server->tick($this->interval * 1000, function () use ($delayQueue, $self) {
-            $delayQueue->touchTimer($self->contrast);
-            ConsoleUtil::log('sleeping {interval}.'. json_encode(['interval' => $self->interval], true), [], 'debug');
+        $server->tick($interval * 1000, function () use ($delayQueue, $interval, $contrast) {
+            $delayQueue->touchTimer($contrast);
+            if (config('queue.log', true)) {
+                ConsoleUtil::log('sleeping {interval}.' . json_encode(['interval' => $interval], true), [], 'debug');
+            }
         });
     }
 

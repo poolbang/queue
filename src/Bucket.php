@@ -18,7 +18,7 @@ use Swoft\Bean\Annotation\Inject;
 class Bucket
 {
     /**
-     * @Inject()
+     * @Inject("queueRedis")
      * @var \Swoft\Redis\Redis
      */
     private $redis;
@@ -46,7 +46,7 @@ class Bucket
     public function getJobsMinDelayTime($index)
     {
         $bucketName = $this->generateBucketName();
-        return $this->redis->zRange($bucketName, 0, $index - 1, 'WITHSCORES');
+        return $this->redis->zrange($bucketName, 0, $index - 1, 'WITHSCORES');
     }
 
     /**

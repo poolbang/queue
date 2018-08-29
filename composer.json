@@ -1,5 +1,5 @@
 {
-  "name": "webphplove/queue",
+  "name": "poolbang/queue",
   "keywords": [
     "php",
     "swoole",
@@ -39,7 +39,6 @@
     "phpunit/phpunit": "^5.7"
   },
   "scripts": {
-    "test": "./vendor/bin/phpunit",
-    "post-package-update": "echo 'Please rerun command: php bin/swoft dev:publish swoft/devtool -f'"
+    "test": "./vendor/bin/phpunit"
   }
 }
