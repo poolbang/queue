@@ -20,7 +20,7 @@ class JobPool
 {
 
     /**
-     * @Inject()
+     * @Inject("queueRedis")
      * @var \Swoft\Redis\Redis
      */
     private $redis;

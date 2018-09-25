@@ -11,7 +11,6 @@ namespace Queue\Bootstrap\Process;
 
 use Queue\DelayQueue;
 use Swoft\App;
-use Swoft\Bean\Annotation\Value;
 use Swoft\Console\Helper\ConsoleUtil;
 use Swoft\Process\Bean\Annotation\Process;
 use Swoft\Process\Process as SwoftProcess;
@@ -27,7 +26,6 @@ class DelayQueueProcess implements ProcessInterface
 
     public function run(SwoftProcess $process)
     {
-        $self = $this;
         //每次对比的元素数量
         $contrast = config('queue.contrast', 10);
         //空数据时等待时长

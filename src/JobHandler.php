@@ -9,7 +9,6 @@
 namespace Queue;
 
 use Swoft\App;
-use Swoft\Bean\Annotation\Inject;
 use Swoft\Console\Helper\ConsoleUtil;
 
 /**
@@ -49,14 +48,14 @@ abstract class JobHandler
     public function run()
     {
         $this->setUp();
-        $delayqueue = App::getBean(DelayQueue::class);
+        $delayQueue = App::getBean(DelayQueue::class);
         try {
             $this->perform();
-            $delayqueue->remove($this->id);
+            $delayQueue->remove($this->id);
         } catch (\Exception $exception) {
             ConsoleUtil::log(sprintf('Job execution failed %s', $exception->getMessage()), [], 'warning');
             //失败时删除job任务避免重复的投递到bucket中,一直触发执行报错的job任务,如果需要执行重载次方法删除下面一行代码即可
-            $delayqueue->remove($this->id);
+            $delayQueue->remove($this->id);
         }
 
         $this->tearDown();

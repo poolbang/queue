@@ -61,7 +61,7 @@ class ReadyQueue
      * @param  integer $timeout 超时时间
      * @return array
      */
-    public function bpopReadyQueue(array $queueNames, $timeout)
+    public function bPopReadyQueue(array $queueNames, $timeout)
     {
         return $this->redis->blPop($queueNames, $timeout);
     }

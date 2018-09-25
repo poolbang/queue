@@ -158,7 +158,7 @@ class DelayQueue
      */
     public function bpop(array $topics, $timeout)
     {
-        $readyJob = $this->readyQueue->bpopReadyQueue($topics, $timeout);
+        $readyJob = $this->readyQueue->bPopReadyQueue($topics, $timeout);
         if (empty($readyJob) || count($readyJob) != 2) {
             return [];
         }
@@ -220,5 +220,6 @@ class DelayQueue
                 return false;
             }
         }
+        return false;
     }
 }

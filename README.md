@@ -14,7 +14,7 @@ msgpack扩展
         'App\Commands',
         'App\Boot',
         'App\Pool', //需要启动SyncRedis
-        'Queue\Boostrap\Process',
+        'Queue\Bootstrap\Process',
     ],
     'beanScan' => [
         'Queue\\',
@@ -36,6 +36,13 @@ msgpack扩展
         'contrast' => 10, //每次对比的元素数量， 默认: 10
         'interval' => 2, //空数据时等待时长， 默认: 1
         'log' => false, //是否在控制台显示queue的log， 默认: true
+    ],
+```
+在config/base.php添加
+```
+    'queueRedis' => [
+        'class' => \Swoft\Redis\Redis::class,
+        'poolName' => 'queueRedis'
     ],
 ```
 #### 配置 SyncRedis 连接
