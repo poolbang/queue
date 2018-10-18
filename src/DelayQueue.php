@@ -209,7 +209,7 @@ class DelayQueue
                 $this->bucket->removeBucket($jobInfo['id']);
                 if (App::hasBean($jobInfo['class'])) {
                     \go(function () use ($jobInfo){
-                        $queueClass = new $jobInfo['class']();
+                        $queueClass = App::getBean($jobInfo['class']);
                         if ($queueClass instanceof JobHandler) {
                             $queueClass->setId($jobInfo['id']);
                             $queueClass->setArgs($jobInfo['args']);

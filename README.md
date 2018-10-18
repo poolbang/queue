@@ -120,9 +120,10 @@ namespace App\Models\Logic;
 
 use Queue\JobHandler;
 use Swoft\Bean\Annotation\Bean;
+use Swoft\Bean\Annotation\Scope;
 
 /**
- * @Bean()
+ * @Bean(scope=Scope::PROTOTYPE)
  * Class QueueLogic
  * @package App\Models\Logic
  */
