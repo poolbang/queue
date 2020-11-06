@@ -7,7 +7,7 @@ queue V2.0版本的，配置更简单了，使用更简洁。
 去除msg扩展，直接用json代替
 
 
-### 安装 composer require poolbang/Queue
+### 安装 composer require poolbang/queue
 
 添加config/queue.php文件，然后内容为：
 ```
