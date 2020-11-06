@@ -8,8 +8,10 @@
 
 namespace Queue;
 
-use Swoft\Bean\Annotation\Bean;
-use Swoft\Bean\Annotation\Inject;
+
+use Swoft\Bean\Annotation\Mapping\Bean;
+use Swoft\Bean\Annotation\Mapping\Inject;
+use Swoft\Redis\Pool;
 
 /**
  * Bucket
@@ -18,41 +20,41 @@ use Swoft\Bean\Annotation\Inject;
 class Bucket
 {
     /**
-     * @Inject("queueRedis")
-     * @var \Swoft\Redis\Redis
+     * @Inject()
+     * @var Pool
      */
     private $redis;
 
     /**
      * 添加JobId到bucket中
      *
-     * @param  string $jobId 任务id
-     * @param  integer $delay 触发时间
+     * @param string $jobId 任务id
+     * @param integer $delay 触发时间
      * @return boolean
      */
     public function pushBucket($jobId, $delay)
     {
         $bucketName = $this->generateBucketName();
-        return $this->redis->zAdd($bucketName, intval($delay), $jobId);
+        return $this->redis->zAdd($bucketName, [$jobId => intval($delay)]);
 
     }
 
     /**
      * 从bucket中获取延迟时间最小的一批Job任务
      *
-     * @param  integer $index 索引位置
+     * @param integer $index 索引位置
      * @return array
      */
     public function getJobsMinDelayTime($index)
     {
         $bucketName = $this->generateBucketName();
-        return $this->redis->zrange($bucketName, 0, $index - 1, 'WITHSCORES');
+        return $this->redis->zrange($bucketName, 0, $index - 1, true);
     }
 
     /**
      * 从bucket中删除JobId
      *
-     * @param  string $jobId 任务id
+     * @param string $jobId 任务id
      * @return boolean
      */
     public function removeBucket($jobId)

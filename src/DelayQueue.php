@@ -10,10 +10,11 @@ namespace Queue;
 
 
 use Queue\Exception\InvalidJobException;
-use Swoft\App;
-use Swoft\Bean\Annotation\Bean;
-use Swoft\Bean\Annotation\Inject;
-use Swoft\Console\Helper\ConsoleUtil;
+use Swoft\Bean\Annotation\Mapping\Bean;
+use Swoft\Bean\Annotation\Mapping\Inject;
+use Swoft;
+use Swoft\Log\Helper\CLog;
+use function sgo;
 
 /**
  * DelayQueue
@@ -91,12 +92,12 @@ class DelayQueue
         ) {
             throw new InvalidJobException("job attribute cannot be empty.");
         }
-        $jobPool = App::getBean(JobPool::class);
+        $jobPool = Swoft::getBean(JobPool::class);
         $result  = $jobPool->putJob($job);
         if (!$result) {
             return false;
         }
-        $result = App::getBean(Bucket::class)->pushBucket($job['id'], $job['delay']);
+        $result = Swoft::getBean(Bucket::class)->pushBucket($job['id'], $job['delay']);
         //Bucket添加失败 删除元数据
         if (!$result) {
             $jobPool->removeJob($job['id']);
@@ -114,8 +115,8 @@ class DelayQueue
      */
     public static function remove($jobId)
     {
-        App::getBean(Bucket::class)->removeBucket($jobId);
-        return App::getBean(JobPool::class)->removeJob($jobId);
+        Swoft::getBean(Bucket::class)->removeBucket($jobId);
+        return Swoft::getBean(JobPool::class)->removeJob($jobId);
     }
 
     /**
@@ -126,7 +127,7 @@ class DelayQueue
      */
     public static function get($jobId)
     {
-        return App::getBean(JobPool::class)->getJob($jobId);
+        return Swoft::getBean(JobPool::class)->getJob($jobId);
     }
 
     /**
@@ -189,7 +190,7 @@ class DelayQueue
                     $isBreak = true;
                     break;
                 }
-                $jobInfo = $this->jobPool->getJob($jobId);
+                $jobInfo =(array) $this->jobPool->getJob($jobId);
                 // job元信息不存在, 从bucket中删除
                 if (empty($jobInfo)) {
                     $this->bucket->removeBucket($jobId);
@@ -201,15 +202,14 @@ class DelayQueue
                     $this->bucket->pushBucket($jobInfo['id'], $jobInfo['delay']);
                     continue;
                 }
-                $this->readyQueue->pushReadyQueue($jobInfo['topic'], $jobInfo['id']);
                 if (config('queue.log', true)) {
-                    ConsoleUtil::log('Found job {id} on Bucket. ' . json_encode(['id' => $jobId, 'time' => $time], true), [], 'info');
-                    ConsoleUtil::log('Push job {id} to {topic} ' . json_encode($jobInfo, true), [], 'notice');
+                    CLog::info('Found jobId:%s on Bucket. ensure time: %u' , $jobId, $time);
+                    CLog::info('Push jobId: %s to topic: %s ' , $jobId, $jobInfo['topic']);
                 }
-                $this->bucket->removeBucket($jobInfo['id']);
-                if (App::hasBean($jobInfo['class'])) {
-                    \go(function () use ($jobInfo){
-                        $queueClass = App::getBean($jobInfo['class']);
+                $this->bucket->removeBucket($jobId);
+                if (Swoft::hasBean($jobInfo['class'])) {
+                    sgo(function () use ($jobInfo){
+                        $queueClass = Swoft::getBean($jobInfo['class']);
                         if ($queueClass instanceof JobHandler) {
                             $queueClass->setId($jobInfo['id']);
                             $queueClass->setArgs($jobInfo['args']);

@@ -8,8 +8,9 @@
 
 namespace Queue;
 
-use Swoft\App;
-use Swoft\Console\Helper\ConsoleUtil;
+use Swoft;
+use Swoft\Log\Helper\CLog;
+use Exception ;
 
 /**
  * Job处理抽象类
@@ -48,12 +49,12 @@ abstract class JobHandler
     public function run()
     {
         $this->setUp();
-        $delayQueue = App::getBean(DelayQueue::class);
+        $delayQueue = Swoft::getBean(DelayQueue::class);
         try {
             $this->perform();
             $delayQueue->remove($this->id);
-        } catch (\Exception $exception) {
-            ConsoleUtil::log(sprintf('Job execution failed %s', $exception->getMessage()), [], 'warning');
+        } catch (Exception $exception) {
+            CLog::info('Job execution failed %s', $exception->getMessage());
             //失败时删除job任务避免重复的投递到bucket中,一直触发执行报错的job任务,如果需要执行重载次方法删除下面一行代码即可
             $delayQueue->remove($this->id);
         }
@@ -61,9 +62,13 @@ abstract class JobHandler
         $this->tearDown();
     }
 
-    protected function setUp() { }
+    protected function setUp()
+    {
+    }
 
-    protected function tearDown() { }
+    protected function tearDown()
+    {
+    }
 
     abstract protected function perform();
 }

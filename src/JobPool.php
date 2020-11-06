@@ -7,10 +7,10 @@
  */
 
 namespace Queue;
-use Queue\Packer\MsgPacker;
-use Swoft\Bean\Annotation\Bean;
-use Swoft\Bean\Annotation\Inject;
-
+use Queue\Packer\JsonPacker;
+use Swoft\Bean\Annotation\Mapping\Bean;
+use Swoft\Bean\Annotation\Mapping\Inject;
+use Swoft\Redis\Pool;
 
 /**
  * Job
@@ -20,16 +20,16 @@ class JobPool
 {
 
     /**
-     * @Inject("queueRedis")
-     * @var \Swoft\Redis\Redis
+     * @Inject()
+     * @var Pool
      */
     private $redis;
 
     /**
      * @Inject()
-     * @var MsgPacker
+     * @var JsonPacker
      */
-    private $msgPacker;
+    private $packer;
 
     /**
      * 获取job元数据
@@ -43,7 +43,7 @@ class JobPool
         if(empty($data)){
             return [];
         }
-        return $this->msgPacker->unpack($data);
+        return $this->packer->unpack($data);
     }
 
 
@@ -55,7 +55,7 @@ class JobPool
      */
     public function putJob(Job $job)
     {
-        $data = $this->msgPacker->pack($job->getAttribute());
+        $data = $this->packer->pack($job->getAttribute());
         return $this->redis->set($job['id'],$data);
 
     }
@@ -68,7 +68,7 @@ class JobPool
      */
     public function removeJob($jobId)
     {
-        return $this->redis->delete($jobId);
+        return $this->redis->del($jobId);
     }
 
 

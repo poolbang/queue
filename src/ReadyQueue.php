@@ -8,9 +8,11 @@
 
 namespace Queue;
 
-use Swoft\Bean\Annotation\Bean;
-use Swoft\Bean\Annotation\Inject;
 
+
+use Swoft\Bean\Annotation\Mapping\Bean;
+use Swoft\Bean\Annotation\Mapping\Inject;
+use Swoft\Redis\Pool;
 
 /**
  * ReadyQueue
@@ -20,10 +22,14 @@ class ReadyQueue
 {
 
     /**
-     * @Inject("queueRedis")
-     * @var \Swoft\Redis\Redis
+     * @Inject()
+     * @var Pool
      */
     private $redis;
+
+    public function getTopicJobs(string $topic, $start, $end){
+        return $this->redis->lRange($topic, $start, $end);
+    }
 
     /**
      * 添加JobId到队列中
@@ -65,6 +71,4 @@ class ReadyQueue
     {
         return $this->redis->blPop($queueNames, $timeout);
     }
-
-
 }
