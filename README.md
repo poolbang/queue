@@ -18,6 +18,13 @@ reutrn [
     ];
 ```
 
+开启DelayQueue进程，在app/bean.php中的process添加下面内容：
+```
+        'process'  => [
+             'queue' => bean(\Queue\Process\DelayQueueProcess::class),
+        ],
+```
+
 ##### job任务的类完成时执行的逻辑
 ```
 namespace App\Models\Logic;
